@@ -1,74 +1,121 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Find Your Craving</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="css/bootstrap-5.3.0-css/bootstrap.min.css">
-        <script>
-            (g=>{var h,a,k,p="The Google Maps JavaScript API",
-                    c="google",
-                    l="importLibrary",
-                    q="__ib__",
-                    m=document,
-                    b=window;
-                b=b[c]||(b[c]={});
-                var d=b.maps||(b.maps={}),
-                    r=new Set,
-                    e=new URLSearchParams,
-                    u=()=>h||(h=new Promise(async(f,n)=>{
-                        await (a=m.createElement("script"));
-                        e.set("libraries",[...r]+"");
-                        for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);
-                        e.set("callback",c+".maps."+q);
-                        a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;
-                        a.onerror=()=>h=n(Error(p+" could not load."));
-                        a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));
-                        d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-                key: "AIzaSyD5MphVq4ozKxB3zywFZEa6ceaNDNgEKQA",
-                v: "weekly",
-            });
-        </script>
-        
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="js\script.js"></script>
-    </head>
-    
-    <body>
-        <h1 class="display-4">Find Your Craving</h1>
-        <div id="map" style="height: 400px;"></div>
-        
-        <div id="dashboard" class="justify-content-center">
-            <div class="row">
-                <div class="col-md-4">
-                    <label for="address" class="form-label">Address:</label>
-                    <div class="input-group">
-                        <input type="text" id="address" class="form-control" placeholder="Enter your address" value="6400 balsam drive">
-                        <button onclick="queryAddress()" class="btn btn-primary">Search</button>
-                    </div>
-                </div>
-            </div>
 
-            <p id="display"></p>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Find Your Craving</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap-5.3.0-css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
-            <div class="row">
-                <div class="col-md-4 d-flex align-items-end">
-                    <label for="restaurant-type" class="form-label">Restaurant Type:</label>
-                    <select id="restaurant-type" class="form-select">
-                        <option value="">Select a type</option>
-                        <option value="italian">Italian</option>
-                        <option value="mexican">Mexican</option>
-                        <option value="chinese">Chinese</option>
-                    </select>
-                </div>
-                <div class="col-md-4 d-flex align-items-end">
-                    <button onclick="findRestaurants()" class="btn btn-primary">Find Restaurants</button>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        (g => {
+            var h, a, k, p = "The Google Maps JavaScript API",
+                c = "google",
+                l = "importLibrary",
+                q = "__ib__",
+                m = document,
+                b = window;
+            b = b[c] || (b[c] = {});
+            var d = b.maps || (b.maps = {}),
+                r = new Set,
+                e = new URLSearchParams,
+                u = () => h || (h = new Promise(async (f, n) => {
+                    await (a = m.createElement("script"));
+                    e.set("libraries", [...r, "places"] + ""); // Include the 'places' library in the libraries list
+                    for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                    e.set("callback", c + ".maps." + q);
+                    a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                    d[q] = f;
+                    a.onerror = () => h = n(Error(p + " could not load."));
+                    a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                    m.head.append(a)
+                }));
+            d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+        })({
+            key: "AIzaSyD5MphVq4ozKxB3zywFZEa6ceaNDNgEKQA", // Replace with your actual API key
+            v: "weekly"
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js\script.js"></script>
+</head>
+
+<body>
+    <h1 class="display-4">Find Your Craving</h1>
+    <div id="map" class="dashboard" style="height: 400px;"></div>
+
+    <div id="dashboard" class="justify-content-center dashboard">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="address" class="form-label">Address:</label>
+                <div class="input-group">
+                    <input type="text" id="address" class="form-control" placeholder="Enter your address"
+                        value="6400 balsam drive, reynoldsburg, ohio">
+                    <button onclick="queryAddress()" class="btn btn-primary">Search</button>
                 </div>
             </div>
         </div>
-        
-    </body>
+
+        <p id="display"></p>
+
+        <div id="type-selection" class="row" style="display:none;">
+            <label for="restaurant-type" class="form-label">Restaurant Type:</label>
+            <div class="col-md-6 d-flex align-items-end">
+                <select id="restaurant-type" class="form-select">
+                    <option value="">Any</option>
+                    <option value="bakery">Bakery</option>
+                    <option value="bar">Bar</option>
+                    <option value="cafe">Cafe</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="convenience">Convenience Store</option>
+                    <option value="fast_food">Fast Food</option>
+                    <option value="indian">Indian</option>
+                    <option value="italian">Italian</option>
+                    <option value="mediterranean">Mediterranean</option>
+                    <option value="mexican">Mexican</option>
+                    <option value="pizza">Pizza</option>
+                    <option value="supermarket">Supermarket</option>
+                </select>
+                <div class="col-md-4 d-flex align-items-end">
+                <button id="find-restaurants-btn" class="btn btn-primary">Find Restaurants</button>
+            </div>
+            </div>
+
+            
+        </div>
+
+        <div id="restaurant-display-table" class="table-responsive" style="display:none;">
+            <table id="restaurant-table" class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Photo</th>
+                        <th>Price Level</th>
+                        <th>User Ranking</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- The restaurant details will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+
+
+
+    </div>
+
+    <div id="lightbox-container" class="lightbox-container">
+        <img id="lightbox-image" class="lightbox-image" alt="Lightbox Image">
+        <span class="close-btn" onclick="closeLightbox()">&times;</span>
+    </div>
+
+</body>
+
 </html>
