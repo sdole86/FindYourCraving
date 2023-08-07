@@ -1,7 +1,8 @@
 let map;
-let marker;
+let marker = null;
 let markers = [];
 let infoWindow;
+let autocomplete;
 
 async function initMap() {
   const { Map } = await google.maps.importLibrary("maps");
@@ -12,6 +13,29 @@ async function initMap() {
 }
 
 initMap();
+
+function initAutocomplete() {
+  
+  const input = document.getElementById("address");
+  
+  autocomplete = new google.maps.places.Autocomplete(input);
+
+  autocomplete.addListener("place_changed", onPlaceChanged);
+}
+
+function onPlaceChanged() {
+  const place = autocomplete.getPlace();
+  if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and pressed the Enter key,
+      // or the Place Details request failed.
+      window.alert("No details available for the input: '" + place.name + "'");
+      return;
+  }
+  
+
+}
+
+initAutocomplete();
 
 function queryAddress() {
   let address = document.getElementById("address").value;
@@ -67,6 +91,7 @@ async function searchRestaurants() {
     request.keyword = restaurantType;
   }
 
+  let bounds = new google.maps.LatLngBounds(); 
   let service = new google.maps.places.PlacesService(map);
   service.nearbySearch(request, function(results, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -144,15 +169,30 @@ async function searchRestaurants() {
         let ratingCell = row.insertCell();
 
         nameCell.innerHTML = `<span class="restaurant-name" onclick="centerMapOnMarker(${restaurantLocation.lat()}, ${restaurantLocation.lng()}, '${name}', '${address}', '${state}', '${zipCode}')">${name}</span>`;
-        locationCell.innerHTML = `${address}, ${state} ${zipCode}`; // Combine address, state, and ZIP code
+        nameCell.setAttribute("data-label", "Name");
+
+        locationCell.innerHTML = `${address}, ${state} ${zipCode}`;
+        locationCell.setAttribute("data-label", "Address");
+
         photoCell.innerHTML = photoUrl ? `<img src="${photoUrl}" alt="Restaurant Photo" width="100" onclick="openLightbox('${photoUrl}')">` : "N/A";
+        photoCell.setAttribute("data-label", "Photo");
+
         priceLevelCell.innerHTML = priceLevel;
+        priceLevelCell.setAttribute("data-label", "Price Level");
+
         ratingCell.innerHTML = ratingStars;
+        ratingCell.setAttribute("data-label", "User Ranking");
+
+        bounds.extend(restaurantLocation);
       });
 
       document.getElementById("restaurant-display-table").style.display = "block";
+
+      map.fitBounds(bounds);
     }
   });
+
+  
 }
 
 function centerMapOnMarker(lat, lng, name, address, state, zipCode) {

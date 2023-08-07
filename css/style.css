@@ -58,3 +58,75 @@
     cursor: pointer;
     text-decoration: underline;
   }
+
+  #restaurant-display-table {
+    width: 900px;
+    margin: auto;
+    padding: 0;
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+  /* Custom CSS for mobile-friendly tables */
+@media (max-width: 576px) { /* Bootstrap's breakpoint for small screens */
+  .mobile-table {
+      display: block;
+  }
+  
+  .mobile-table thead {
+      display: none; /* Hide table headers */
+  }
+
+  .mobile-table tr {
+      margin-bottom: 0.625rem;
+      display: block;
+      border: 1px solid #e1e1e1;
+  }
+
+  .mobile-table td {
+      display: block;
+      text-align: right;
+      position: relative;
+      border-bottom: 1px solid #e1e1e1;
+      padding-left: 50%;
+  }
+
+  .mobile-table td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0;
+      width: 50%;
+      padding-left: 15px;
+      font-weight: bold;
+      text-align: left;
+  }
+}
+
+/* Mobile view adjustments */
+@media only screen and (max-width: 767px) {
+  /* Remove padding and margin from body and html to prevent overflow */
+  body, html {
+      padding: 0;
+      margin: 0;
+  }
+
+  /* Ensure the table's container fills the entire viewport width */
+  #restaurant-display-table {
+      width: 100vw;
+      overflow-x: scroll; /* Allows horizontal scrolling if the table content overflows */
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+  }
+
+  /* Ensure the table itself fills the container */
+  #restaurant-table {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+  }
+
+  /* Optional: You can adjust the table's cells to be a bit more compact on mobile */
+  #restaurant-table td, #restaurant-table th {
+      padding: 0.5rem;
+  }
+}
