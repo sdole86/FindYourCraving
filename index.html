@@ -13,38 +13,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
     <link rel="stylesheet" href="css/style.css">
-    <script>
-        (g => {
-            var h, a, k, p = "The Google Maps JavaScript API",
-                c = "google",
-                l = "importLibrary",
-                q = "__ib__",
-                m = document,
-                b = window;
-            b = b[c] || (b[c] = {});
-            var d = b.maps || (b.maps = {}),
-                r = new Set,
-                e = new URLSearchParams,
-                u = () => h || (h = new Promise(async (f, n) => {
-                    await (a = m.createElement("script"));
-                    e.set("libraries", [...r, "places"] + ""); // Include the 'places' library in the libraries list
-                    for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-                    e.set("callback", c + ".maps." + q);
-                    a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-                    d[q] = f;
-                    a.onerror = () => h = n(Error(p + " could not load."));
-                    a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-                    m.head.append(a)
-                }));
-            d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
-        })({
-            key: "AIzaSyD5MphVq4ozKxB3zywFZEa6ceaNDNgEKQA", // Replace with your actual API key
-            v: "weekly"
-        });
-    </script>
-
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="js\script.js"></script>
+
 </head>
 
 <body>
@@ -60,7 +31,7 @@
                     <input type="text" id="address" class="form-control" placeholder="Enter your address"
                            value="6400 balsam drive, reynoldsburg, ohio">
                     <span class="input-group-btn">
-                        <button onclick="queryAddress()" class="btn btn-primary">Confirm</button>
+                        <button id="confirm-address-btn" class="btn btn-primary">Confirm</button>
                     </span>
                 </div>
             </div>
@@ -95,10 +66,10 @@
         </div>
          
     </div>
-    
+
         <div id="restaurant-display-table" class="table-responsive" style="display:none;">
             <table id="restaurant-table" class="table table-striped">
-                <thead class="thead-dark">
+                <thead class="table-primary">
                     <tr>
                         <th>Name</th>
                         <th>Address</th>
@@ -118,6 +89,7 @@
         <span class="close-btn" onclick="closeLightbox()">&times;</span>
     </div>
 
+    <script src="js/script.js"></script>
 </body>
 
 </html>

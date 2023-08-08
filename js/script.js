@@ -1,8 +1,35 @@
 let map;
-let marker = null;
+let marker;
 let markers = [];
 let infoWindow;
-let autocomplete;
+
+(g => {
+  var h, a, k, p = "The Google Maps JavaScript API",
+      c = "google",
+      l = "importLibrary",
+      q = "__ib__",
+      m = document,
+      b = window;
+  b = b[c] || (b[c] = {});
+  var d = b.maps || (b.maps = {}),
+      r = new Set,
+      e = new URLSearchParams,
+      u = () => h || (h = new Promise(async (f, n) => {
+          await (a = m.createElement("script"));
+          e.set("libraries", [...r, "places"] + ""); // Include the 'places' library in the libraries list
+          for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+          e.set("callback", c + ".maps." + q);
+          a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+          d[q] = f;
+          a.onerror = () => h = n(Error(p + " could not load."));
+          a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+          m.head.append(a)
+      }));
+  d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+})({
+  key: "AIzaSyD5MphVq4ozKxB3zywFZEa6ceaNDNgEKQA", 
+  v: "weekly"
+});
 
 async function initMap() {
   const { Map } = await google.maps.importLibrary("maps");
@@ -13,29 +40,6 @@ async function initMap() {
 }
 
 initMap();
-
-function initAutocomplete() {
-  
-  const input = document.getElementById("address");
-  
-  autocomplete = new google.maps.places.Autocomplete(input);
-
-  autocomplete.addListener("place_changed", onPlaceChanged);
-}
-
-function onPlaceChanged() {
-  const place = autocomplete.getPlace();
-  if (!place.geometry) {
-      // User entered the name of a Place that was not suggested and pressed the Enter key,
-      // or the Place Details request failed.
-      window.alert("No details available for the input: '" + place.name + "'");
-      return;
-  }
-  
-
-}
-
-initAutocomplete();
 
 function queryAddress() {
   let address = document.getElementById("address").value;
@@ -212,3 +216,5 @@ function openLightbox(imageUrl) {
 function closeLightbox() {
   document.getElementById("lightbox-container").style.display = "none";
 }
+
+document.getElementById("confirm-address-btn").addEventListener("click", queryAddress);
