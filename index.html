@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/bootstrap-5.3.0-css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-
+    <script src="/js/bootstrap-5.3.0-js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -19,7 +19,10 @@
 </head>
 
 <body>
-    <h1 class="display-4 text-center mt-3">Find Your Craving</h1>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#0d6efd" d="M0,224L48,208C96,192,192,160,288,133.3C384,107,480,85,576,101.3C672,117,768,171,864,186.7C960,203,1056,181,1152,176C1248,171,1344,181,1392,186.7L1440,192L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>
+
+    <h1 class="display-4 text-center mt-3 py-3" style="color: white;">Find Your Craving</h1>
+
     <div id="map" class="dashboard col-12" style="height: 60vh; width: 100%;"></div>
 
     <div id="dashboard" class="justify-content-center dashboard">
@@ -28,19 +31,18 @@
             <div class="col-12 col-md-6">
                 <label for="address" class="form-label">Address:</label>
                 <div class="input-group">
-                    <input type="text" id="address" class="form-control" placeholder="Enter your address"
-                           value="6400 balsam drive, reynoldsburg, ohio">
+                    <input type="text" id="address" class="form-control my-input" placeholder="Enter your address">
                     <span class="input-group-btn">
-                        <button id="confirm-address-btn" class="btn btn-primary">Confirm</button>
+                        <button id="confirm-address-btn" class="btn btn-primary my-button">Confirm</button>
                     </span>
                 </div>
             </div>
 
             <!-- Restaurant Type Dropdown (Hidden at start) -->
-            <div id="type-selection" class="col-12 col-md-6 mb-3" style="display:none;"> 
+            <div id="type-selection" class="col-12 col-md-6" style="display:none;"> 
                 <label for="restaurant-type" class="form-label">Restaurant Type:</label>
                 <div class="d-flex align-items-center"> 
-                    <select id="restaurant-type" class="form-select">
+                    <select id="restaurant-type" class="form-select my-input">
                         <option value="">Any</option>
                         <option value="bakery">Bakery</option>
                         <option value="bar">Bar</option>
@@ -55,7 +57,7 @@
                         <option value="pizza">Pizza</option>
                         <option value="supermarket">Supermarket</option>
                     </select>
-                    <button id="find-restaurants-btn" class="btn btn-primary ms-2">Search!</button>
+                    <button id="find-restaurants-btn" class="btn btn-primary my-button">Search!</button>
                 </div>
             </div>
 
@@ -88,6 +90,21 @@
         <img id="lightbox-image" class="lightbox-image" alt="Lightbox Image">
         <span class="close-btn" onclick="closeLightbox()">&times;</span>
     </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resultModalLabel">Search Result</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="modalMessage"></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <script src="js/script.js"></script>
 </body>

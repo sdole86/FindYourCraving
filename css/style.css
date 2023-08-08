@@ -4,6 +4,13 @@
     margin:auto;
 }
 
+.my-button {
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.my-input {
+  border-radius: 0.25rem 0 0 0.25rem!important;
+}
 .center {
     margin:auto;
 }
@@ -63,17 +70,17 @@
     width: 900px;
     margin: auto;
     padding: 0;
-    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    box-sizing: border-box; 
 }
 
   /* Custom CSS for mobile-friendly tables */
-@media (max-width: 576px) { /* Bootstrap's breakpoint for small screens */
+@media (max-width: 576px) { 
   .mobile-table {
       display: block;
   }
   
   .mobile-table thead {
-      display: none; /* Hide table headers */
+      display: none; 
   }
 
   .mobile-table tr {
@@ -101,12 +108,25 @@
   }
 }
 
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: -1;
+}
+
 /* Mobile view adjustments */
 @media only screen and (max-width: 767px) {
   /* Remove padding and margin from body and html to prevent overflow */
   body, html {
       padding: 0;
       margin: 0;
+  }
+
+  .dashboard {
+    width: 100%;
+    padding: .5rem;
   }
 
   /* Ensure the table's container fills the entire viewport width */
@@ -125,8 +145,12 @@
       padding: 0;
   }
 
-  /* Optional: You can adjust the table's cells to be a bit more compact on mobile */
   #restaurant-table td, #restaurant-table th {
       padding: 0.5rem;
   }
+
+  svg{
+    
+  }
+  
 }

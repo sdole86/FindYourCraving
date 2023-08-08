@@ -32,12 +32,42 @@ let infoWindow;
 });
 
 async function initMap() {
-  const { Map } = await google.maps.importLibrary("maps");
-  map = new Map(document.getElementById("map"), {
+  await google.maps.importLibrary("maps");
+  map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: -34.397, lng: 150.644 },
     zoom: 8,
   });
+
+  // Check if the places library is loaded
+  if (!google.maps.places) {
+    console.error("Google Maps Places library not loaded!");
+    return;
+  }
+
+  // Autocomplete
+  let input = document.getElementById("address");
+  let autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+
+  // Add listener for place selection
+  autocomplete.addListener('place_changed', function() {
+    let place = autocomplete.getPlace();
+
+    if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and pressed the Enter key, or the Place Details request failed.
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
+
+    // Update address field with full address of the place
+    input.value = place.formatted_address;
+
+    // Trigger your queryAddress when selecting option from list
+    queryAddress();
+  });
 }
+
+
 
 initMap();
 
@@ -45,6 +75,7 @@ function queryAddress() {
   let address = document.getElementById("address").value;
   let displayElement = document.getElementById("display");
   let selectionDiv = document.getElementById("type-selection");
+  document.getElementById("restaurant-display-table").style.display = "none";
 
   if (address) {
     var geocoder = new google.maps.Geocoder();
@@ -57,9 +88,7 @@ function queryAddress() {
         let location = results[0].geometry.location;
         let latitude = location.lat();
         let longitude = location.lng();
-        displayElement.textContent =
-          "Latitude: " + latitude + ", Longitude: " + longitude;
-        // Use the latitude and longitude for further processing
+        
         selectionDiv.style.display = "block";
 
         // add listener to button
@@ -72,12 +101,30 @@ function queryAddress() {
         marker = new google.maps.Marker({
           position: location,
           map: map,
+          icon: "img/house.png",
         });
-      } else {
-        displayElement.textContent =
-          status + ": Search unsuccessful";
-        selectionDiv.style.display = "none";
+      } 
+      else 
+      {
+        
+        if (status === "success") {
+          message = "Search successful!";
+        } 
+        else 
+        {
+            message = "Search unsuccessful";
+            selectionDiv.style.display = "none";
+            // Set the message in the modal
+            const modalMessage = document.getElementById("modalMessage");
+            modalMessage.textContent = message;
+
+            // Show the modal
+            const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+            resultModal.show();
+        }
       }
+
+        
     });
   }
 }
@@ -108,6 +155,8 @@ async function searchRestaurants() {
         marker.setMap(null);
       });
       markers = [];
+
+      let currentInfoWindow = null;
 
       restaurants.forEach(function(restaurant) {
         let name = restaurant.name;
@@ -147,20 +196,25 @@ async function searchRestaurants() {
         // Create marker for the restaurant
         let restaurantLocation = restaurant.geometry.location;
         let marker = new google.maps.Marker({
-          position: restaurantLocation,
-          map: map,
+            position: restaurantLocation,
+            map: map,
         });
-
-        // Create info window for the marker
+        
+        // Create a unique info window for this marker
         let infoWindowContent = `<div><h4>${name}</h4><p>${address}, ${state} ${zipCode}</p></div>`;
-        infoWindow = new google.maps.InfoWindow({
-          content: infoWindowContent,
+        let localInfoWindow = new google.maps.InfoWindow({
+            content: infoWindowContent,
         });
 
         // Add click event listener to the marker to open the info window
         marker.addListener('click', function() {
-          infoWindow.open(map, marker);
-        });
+        // Close previously opened infoWindow
+        if (currentInfoWindow) {
+            currentInfoWindow.close();
+        }
+        localInfoWindow.open(map, marker);
+        currentInfoWindow = localInfoWindow; // Store reference to the open infoWindow
+    });
 
         // Add marker to the markers array
         markers.push(marker);
